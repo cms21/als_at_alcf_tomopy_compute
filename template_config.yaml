@@ -1,0 +1,38 @@
+engine:
+    type: GlobusComputeEngine # This engine uses the HighThroughputExecutor
+
+    max_workers: 1 # Sets one worker per node
+    prefetch_capacity: 0  # Increase if you have many more tasks than workers                                                    
+
+    address:
+        type: address_by_interface
+        ifname: bond0
+
+    strategy:
+        type: SimpleStrategy
+        max_idletime: 300 # Batch jobs will remain active for 300s with no work before shutting down
+
+    provider:
+        type: PBSProProvider
+
+        launcher:
+            type: MpiExecLauncher
+            # Ensures 1 manger per node, work on all 64 cores
+            bind_cmd: --cpu-bind
+            overrides: --ppn 1
+
+        account: IRIBeta
+        queue: debug
+        cpus_per_node: 64
+
+        # e.g., "#PBS -l filesystems=home:grand:eagle\n#PBS -k doe"
+        scheduler_options: "#PBS -l filesystems=home:eagle"
+
+        # Node setup: activate necessary conda environment and such
+        worker_init: "module load conda; mamba activate /eagle/IRIBeta/als/env/tomopy; export PATH=$PATH:/eagle/IRIBeta/als/example/; cd $HOME/.globus_compute/polaris02-preemptable"
+
+        walltime: 00:60:00 # Jobs will end after 60 minutes
+        nodes_per_block: 1 # All jobs will have 1 node
+        init_blocks: 0
+        min_blocks: 0
+        max_blocks: 1 # No more than 1 job will be scheduled at a time
