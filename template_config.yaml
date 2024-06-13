@@ -29,7 +29,7 @@ engine:
         scheduler_options: "#PBS -l filesystems=home:eagle"
 
         # Node setup: activate necessary conda environment and such
-        worker_init: "module load conda; conda activate /eagle/IRIBeta/als/env/tomopy; export PATH=$PATH:/eagle/IRIBeta/als/example/; cd $HOME/.globus_compute/als_endpoint"
+        worker_init: "module use /soft/modulefiles; module load conda; conda activate /eagle/IRIBeta/als/env/tomopy; export PATH=$PATH:/eagle/IRIBeta/als/example/; cd $HOME/.globus_compute/als_endpoint"
 
         walltime: 00:60:00 # Jobs will end after 60 minutes
         nodes_per_block: 1 # All jobs will have 1 node
