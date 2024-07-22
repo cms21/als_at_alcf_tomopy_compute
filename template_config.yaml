@@ -8,9 +8,10 @@ engine:
         type: address_by_interface
         ifname: bond0
 
-    strategy:
-        type: SimpleStrategy
-        max_idletime: 300 # Batch jobs will remain active for 300s with no work before shutting down
+    strategy: simple
+    job_status_kwargs:
+        max_idletime: 300 # Job will wait idle for 300s for new work, after which it will shut down
+        strategy_period: 60
 
     provider:
         type: PBSProProvider
